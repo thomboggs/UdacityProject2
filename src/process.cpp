@@ -14,7 +14,7 @@ using std::vector;
 // Constructor which sets private variable <pid_>
 Process::Process(int p) : pid_(p) { cmdLine_ = LinuxParser::Command(p); }
 
-// Test: Return this process's ID
+// Done: Return this process's ID
 int Process::Pid() {
   // return 0;
   return this->pid_;
@@ -60,13 +60,13 @@ float Process::CpuUtilization() {
 
 float Process::GetCpuUtil() { return this->cpuUtil; }
 
-// Test: Return the command that generated this process
+// Done: Return the command that generated this process
 string Process::Command() {
   return cmdLine_;
   // return string();
 }
 
-// Test: Return this process's memory utilization
+// Done: Return this process's memory utilization
 string Process::Ram() {
   return LinuxParser::Ram(this->pid_);
   // return string();
