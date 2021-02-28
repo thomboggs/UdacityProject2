@@ -46,9 +46,8 @@ vector<Process>& System::Processes() {
 
     if (result == current_pids.end()) {
       Process proc = Process(pid);
-      // proc.CpuUtilization();
       processes_.push_back(proc);
-    } 
+    }
   }
 
   int this_pid;
@@ -56,17 +55,16 @@ vector<Process>& System::Processes() {
   for (unsigned int i = 0; i < processes_.size(); i++) {
     this_pid = processes_[i].Pid();
     if (std::find(active_pids.begin(), active_pids.end(), this_pid) ==
-        active_pids.end()) 
-    {
+        active_pids.end()) {
       processes_.erase(processes_.begin() + i + 1);
-    }
-    else 
-    {
+    } else {
+      // need to update cpu utilization here so it can be correctly used to sort
+      // the list
       processes_[i].CpuUtilization();
     }
   }
 
-  // Sort the vector
+  // Sort the vector by cpu utilization
   std::sort(processes_.begin(), processes_.end());
 
   return processes_;

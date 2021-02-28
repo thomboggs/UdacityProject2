@@ -1,10 +1,12 @@
 #include <dirent.h>
 #include <unistd.h>
+#include <experimental/filesystem>
 #include <string>
 #include <vector>
 
 #include "linux_parser.h"
 
+namespace fs = std::experimental::filesystem;
 using std::stof;
 using std::string;
 using std::to_string;
@@ -47,20 +49,17 @@ string LinuxParser::Kernel() {
 // BONUS: Update this to use std::filesystem
 vector<int> LinuxParser::Pids() {
   vector<int> pids;
-  DIR* directory = opendir(kProcDirectory.c_str());
-  struct dirent* file;
-  while ((file = readdir(directory)) != nullptr) {
-    // Is this a directory?
-    if (file->d_type == DT_DIR) {
-      // Is every character of the name a digit?
-      string filename(file->d_name);
+  string filename;
+  fs::path proc_dir = fs::path(kProcDirectory);
+  for (auto& p : fs::directory_iterator(proc_dir)) {
+    if (fs::is_directory(p)) {
+      filename = p.path().filename();
       if (std::all_of(filename.begin(), filename.end(), isdigit)) {
         int pid = stoi(filename);
         pids.push_back(pid);
       }
     }
   }
-  closedir(directory);
   return pids;
 }
 
@@ -118,6 +117,9 @@ Not Doing any "Jiffies" calculations in this project
 
 // Done: Read and return CPU utilization
 vector<string> LinuxParser::CpuUtilization() {
+  // I didn't use the CPU kStates becasue is seemed simpler to read the line
+  // stream instead of converting to vector and using enum struct to access
+  // indices.
   string cpuName, user, nice, system, idle, iowait, irq, softirq, steal,
       out_idle, non_idle, out_total;
   vector<string> returnVal;
@@ -164,7 +166,6 @@ int LinuxParser::RunningProcesses() {
       return std::stoi(value, nullptr, 10);
     }
   }
-
   return 0;
 }
 
@@ -192,7 +193,6 @@ string LinuxParser::Ram(int pid) {
       return to_string(std::stoi(value, nullptr, 10) / 1000);
     }
   }
-
   return string();
 }
 
@@ -208,7 +208,6 @@ string LinuxParser::Uid(int pid) {
       return value;
     }
   }
-
   return string();
 }
 

@@ -13,21 +13,15 @@ string Format::ElapsedTime(long seconds) {
   minutes = seconds / 60;
   seconds -= minutes * 60;
 
-  if (minutes < 10) 
-  {
-    minutes_str = '0'+ std::to_string(minutes);
-  }
-  else
-  {
+  if (minutes < 10) {
+    minutes_str = '0' + std::to_string(minutes);
+  } else {
     minutes_str = std::to_string(minutes);
   }
 
-  if (seconds < 10) 
-  {
-    seconds_str = '0'+ std::to_string(seconds);
-  }
-  else
-  {
+  if (seconds < 10) {
+    seconds_str = '0' + std::to_string(seconds);
+  } else {
     seconds_str = std::to_string(seconds);
   }
 
